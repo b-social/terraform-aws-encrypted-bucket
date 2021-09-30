@@ -25,14 +25,13 @@ data "template_file" "encrypted_bucket_policy" {
   }
 }
 
-resource "aws_s3_bucket" "log_bucket" {
-  bucket = "${var.bucket_name}-log-bucket"
+resource "aws_s3_bucket" "access_log_bucket" {
+  bucket = "${var.bucket_name}-access-log"
   acl    = "log-delivery-write"
   count = var.enable_access_logging == "yes" ? 1 : 0
 
   versioning {
-    enabled = true
-    mfa_delete = var.mfa_delete
+    enabled = false
   }
 
   dynamic "server_side_encryption_configuration" {
@@ -74,7 +73,7 @@ resource "aws_s3_bucket" "encrypted_bucket" {
   dynamic logging {
     for_each = var.enable_access_logging == "yes" ? [1] : []
     content {
-      target_bucket = aws_s3_bucket.log_bucket[0].id
+      target_bucket = aws_s3_bucket.access_log_bucket[0].id
       target_prefix = "log/"
     }
   }
