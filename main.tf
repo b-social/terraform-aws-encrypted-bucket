@@ -28,7 +28,7 @@ data "template_file" "encrypted_bucket_policy" {
 resource "aws_s3_bucket" "log_bucket" {
   bucket = "${var.bucket_name}-log-bucket"
   acl    = "log-delivery-write"
-  count = "${var.enable_access_logging == "yes" ? 1 : 0}"
+  count = var.enable_access_logging == "yes" ? 1 : 0
 }
 
 resource "aws_s3_bucket" "encrypted_bucket" {
@@ -51,11 +51,11 @@ resource "aws_s3_bucket" "encrypted_bucket" {
   }
 
   dynamic logging {
-    for_each = var.enable_access_logging != null ? [1] : []
+    for_each = var.enable_access_logging == "yes" ? [1] : []
     content {
-      target_bucket = aws_s3_bucket.log_bucket.id
+      target_bucket = aws_s3_bucket.log_bucket[0].id
       target_prefix = "log/"
-      }
+    }
   }
 
   versioning {

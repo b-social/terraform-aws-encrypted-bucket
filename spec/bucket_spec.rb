@@ -226,6 +226,14 @@ describe 'Encrypted bucket' do
     it { should have_server_side_encryption(algorithm: "aws:kms") }
   end
 
+  context 'with access logging' do
+    before(:all) do
+      provision(enable_access_logging: "yes")
+    end
+
+    it { should have_logging_enabled(target_bucket: "#{bucket_name}-log-bucket", target_prefix: 'logs/') }
+  end
+
 
   def capture_stdout(&block)
     output = StringIO.new
