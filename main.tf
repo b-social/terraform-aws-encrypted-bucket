@@ -31,7 +31,7 @@ resource "aws_s3_bucket" "log_bucket" {
   count = var.enable_access_logging == "yes" ? 1 : 0
 
   versioning {
-    enabled = false
+    enabled = true
     mfa_delete = var.mfa_delete
   }
 
@@ -46,6 +46,10 @@ resource "aws_s3_bucket" "log_bucket" {
       }
     }
   }
+
+  tags = merge({
+    Name = var.bucket_name
+  }, var.tags)
 }
 
 resource "aws_s3_bucket" "encrypted_bucket" {
