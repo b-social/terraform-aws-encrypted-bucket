@@ -29,6 +29,23 @@ resource "aws_s3_bucket" "log_bucket" {
   bucket = "${var.bucket_name}-log-bucket"
   acl    = "log-delivery-write"
   count = var.enable_access_logging == "yes" ? 1 : 0
+
+  versioning {
+    enabled = false
+    mfa_delete = var.mfa_delete
+  }
+
+  dynamic "server_side_encryption_configuration" {
+    for_each = var.kms_key_arn != null ? [1] : []
+    content {
+      rule {
+        apply_server_side_encryption_by_default {
+          kms_master_key_id = var.kms_key_arn
+          sse_algorithm = "aws:kms"
+        }
+      }
+    }
+  }
 }
 
 resource "aws_s3_bucket" "encrypted_bucket" {
