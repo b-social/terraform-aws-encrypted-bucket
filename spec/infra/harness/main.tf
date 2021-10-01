@@ -14,6 +14,7 @@ module "encrypted_bucket" {
   acl = var.acl
 
   mfa_delete = var.mfa_delete
+  enable_access_logging = var.enable_access_logging
 
   source_policy_json = var.include_source_policy_json ? data.template_file.test_policy.rendered : ""
 

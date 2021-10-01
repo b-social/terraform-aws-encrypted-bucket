@@ -37,3 +37,9 @@ variable "kms_key_arn" {
   description = "If provided, the given key will be used to enable default server side encryption"
   default = null
 }
+
+variable "enable_access_logging" {
+  description = "Whether or not to enable access logging (\"yes\" or \"no\")."
+  type = string
+  default = "no"
+}
