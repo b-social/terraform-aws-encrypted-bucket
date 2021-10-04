@@ -38,6 +38,11 @@ variable "kms_key_arn" {
   default = null
 }
 
+variable "bucket_key_enabled" {
+  description = "Whether or not to use Amazon S3 Bucket Keys for SSE-KMS."
+  default = false
+}
+
 variable "enable_access_logging" {
   description = "Whether or not to enable access logging (\"yes\" or \"no\")."
   type = string
