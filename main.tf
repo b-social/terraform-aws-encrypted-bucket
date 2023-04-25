@@ -102,6 +102,15 @@ resource "aws_s3_bucket_versioning" "encrypted_bucket_versioning" {
  }
 }
 
+resource "aws_s3_bucket_public_access_block" "encrypted_bucket_public_access_block" {
+  bucket = aws_s3_bucket.encrypted_bucket.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 data "aws_iam_policy_document" "encrypted_bucket_policy_document" {
   source_json   = var.source_policy_json
   override_json = data.template_file.encrypted_bucket_policy.rendered
