@@ -38,6 +38,7 @@ variable "access_log_bucket_name" {
   default = ""
   validation {
     condition = var.enable_access_logging == "yes" ? length(var.access_log_bucket_name) > 0 : true
+    error_message = "You must provide an access_log_bucket_name if enable_access_logging is 'yes'"
   }
 }
 
