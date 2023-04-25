@@ -72,7 +72,7 @@ resource "aws_s3_bucket" "encrypted_bucket" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encrypted_bucket_server_side_encryption_configuration" {
-  bucket = aws_s3_bucket.encrypted_bucket
+  bucket = aws_s3_bucket.encrypted_bucket.id
 
   rule {
       apply_server_side_encryption_by_default {
@@ -84,7 +84,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encrypted_bucket_
 }
 
 resource "aws_s3_bucket_ownership_controls" "encrypted_bucket_ownership_controls" {
-  bucket = aws_s3_bucket.encrypted_bucket
+  bucket = aws_s3_bucket.encrypted_bucket.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -94,7 +94,7 @@ resource "aws_s3_bucket_ownership_controls" "encrypted_bucket_ownership_controls
 resource "aws_s3_bucket_acl" "encrypted_bucket_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.encrypted_bucket_ownership_controls]
 
-  bucket = aws_s3_bucket.encrypted_bucket
+  bucket = aws_s3_bucket.encrypted_bucket.id
   acl = var.acl
 }
 
