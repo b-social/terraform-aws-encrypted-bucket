@@ -51,8 +51,6 @@ data "template_file" "encrypted_bucket_policy" {
 resource "aws_s3_bucket" "encrypted_bucket" {
   bucket = var.bucket_name
 
-  acl = var.acl
-
   force_destroy = local.allow_destroy_when_objects_present
 
   server_side_encryption_configuration {
@@ -81,6 +79,21 @@ resource "aws_s3_bucket" "encrypted_bucket" {
   tags = merge({
     Name = var.bucket_name
   }, var.tags)
+}
+
+resource "aws_s3_bucket_ownership_controls" "encrypted_bucket_ownership_controls" {
+  bucket = aws_s3_bucket.encrypted_bucket
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "encrypted_bucket_acl" {
+  depends_on = [aws_s3_bucket_ownership_controls.encrypted_bucket_ownership_controls]
+
+  bucket = aws_s3_bucket.encrypted_bucket
+  acl = var.acl
 }
 
 data "aws_iam_policy_document" "encrypted_bucket_policy_document" {
