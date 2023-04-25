@@ -78,8 +78,28 @@ resource "aws_s3_bucket_ownership_controls" "encrypted_bucket_ownership_controls
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "public_access_block" {
+  count = (
+  var.public_access_block.block_public_acls
+  || var.public_access_block.block_public_policy
+  || var.public_access_block.ignore_public_acls
+  || var.public_access_block.restrict_public_buckets
+  ? 1 : 0
+  )
+
+  bucket = aws_s3_bucket.encrypted_bucket.id
+
+  block_public_acls       = var.public_access_block.block_public_acls
+  block_public_policy     = var.public_access_block.block_public_policy
+  ignore_public_acls      = var.public_access_block.ignore_public_acls
+  restrict_public_buckets = var.public_access_block.restrict_public_buckets
+}
+
 resource "aws_s3_bucket_acl" "encrypted_bucket_acl" {
-  depends_on = [aws_s3_bucket_ownership_controls.encrypted_bucket_ownership_controls]
+  depends_on = [
+    aws_s3_bucket_ownership_controls.encrypted_bucket_ownership_controls,
+    aws_s3_bucket_public_access_block.public_access_block
+  ]
 
   bucket = aws_s3_bucket.encrypted_bucket.id
   acl = var.acl
@@ -102,15 +122,6 @@ resource "aws_s3_bucket_versioning" "encrypted_bucket_versioning" {
  }
 }
 
-resource "aws_s3_bucket_public_access_block" "encrypted_bucket_public_access_block" {
-  bucket = aws_s3_bucket.encrypted_bucket.id
-
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
 data "aws_iam_policy_document" "encrypted_bucket_policy_document" {
   source_json   = var.source_policy_json
   override_json = data.template_file.encrypted_bucket_policy.rendered
@@ -121,19 +132,3 @@ resource "aws_s3_bucket_policy" "encrypted_bucket" {
   policy = data.aws_iam_policy_document.encrypted_bucket_policy_document.json
 }
 
-resource "aws_s3_bucket_public_access_block" "public_access_block" {
-  count = (
-  var.public_access_block.block_public_acls
-  || var.public_access_block.block_public_policy
-  || var.public_access_block.ignore_public_acls
-  || var.public_access_block.restrict_public_buckets
-  ? 1 : 0
-  )
-
-  bucket = aws_s3_bucket.encrypted_bucket.id
-
-  block_public_acls       = var.public_access_block.block_public_acls
-  block_public_policy     = var.public_access_block.block_public_policy
-  ignore_public_acls      = var.public_access_block.ignore_public_acls
-  restrict_public_buckets = var.public_access_block.restrict_public_buckets
-}
