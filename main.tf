@@ -53,19 +53,6 @@ resource "aws_s3_bucket" "encrypted_bucket" {
 
   force_destroy = local.allow_destroy_when_objects_present
 
-  dynamic logging {
-    for_each = local.enable_access_logging ? toset(["logging"]) : toset([])
-    content {
-      target_bucket = var.access_log_bucket_name
-      target_prefix = var.access_log_object_key_prefix
-    }
-  }
-
-  versioning {
-    enabled    = local.enable_versioning
-    mfa_delete = local.enable_mfa_delete
-  }
-
   tags = merge({
     Name = var.bucket_name
   }, var.tags)
@@ -96,6 +83,23 @@ resource "aws_s3_bucket_acl" "encrypted_bucket_acl" {
 
   bucket = aws_s3_bucket.encrypted_bucket.id
   acl = var.acl
+}
+
+resource "aws_s3_bucket_logging" "encrypted_bucket_logging" {
+  bucket = aws_s3_bucket.encrypted_bucket.id
+
+  for_each = local.enable_access_logging ? toset(["logging"]) : toset([])
+  target_bucket = var.access_log_bucket_name
+  target_prefix = var.access_log_object_key_prefix
+}
+
+resource "aws_s3_bucket_versioning" "encrypted_bucket_versioning" {
+  bucket = aws_s3_bucket.encrypted_bucket.id
+
+ versioning_configuration {
+   status = local.enable_versioning
+   mfa_delete = local.enable_mfa_delete
+ }
 }
 
 data "aws_iam_policy_document" "encrypted_bucket_policy_document" {
