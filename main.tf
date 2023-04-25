@@ -97,8 +97,8 @@ resource "aws_s3_bucket_versioning" "encrypted_bucket_versioning" {
   bucket = aws_s3_bucket.encrypted_bucket.id
 
  versioning_configuration {
-   status = local.enable_versioning
-   mfa_delete = local.enable_mfa_delete
+   status = local.enable_versioning ? "Enabled" : "Disabled"
+   mfa_delete = local.enable_mfa_delete ? "Enabled" : "Disabled"
  }
 }
 
