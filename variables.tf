@@ -36,6 +36,9 @@ variable "access_log_bucket_name" {
   description = "The name of the bucket to use for access logging, required when enable_access_logging is \"yes\"."
   type = string
   default = ""
+  validation {
+    condition = var.enable_access_logging == "yes" ? length(var.access_log_bucket_name) > 0 : true
+  }
 }
 
 variable "access_log_object_key_prefix" {

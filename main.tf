@@ -5,8 +5,8 @@ locals {
   sse_algorithm     = var.kms_key_arn == "" ? local.sse_s3_algorithm : local.sse_kms_algorithm
   kms_master_key_id = var.kms_key_arn == "" ? null : var.kms_key_arn
 
-  enable_versioning                  = var.enable_versioning == "yes"
-  enable_mfa_delete                  = var.enable_mfa_delete == "" ? var.mfa_delete == "true" : var.enable_mfa_delete == "yes"
+  enable_versioning                  = var.enable_versioning == "yes" ? "Enabled" : "Disabled"
+  enable_mfa_delete                  = (var.enable_mfa_delete == "" ? var.mfa_delete == "true" : var.enable_mfa_delete == "yes") ? "Enabled" : "Disabled"
   enable_access_logging              = var.enable_access_logging == "yes"
   enable_bucket_key                 = var.enable_bucket_key == "yes"
   allow_destroy_when_objects_present = var.allow_destroy_when_objects_present == "yes"
@@ -97,8 +97,8 @@ resource "aws_s3_bucket_versioning" "encrypted_bucket_versioning" {
   bucket = aws_s3_bucket.encrypted_bucket.id
 
  versioning_configuration {
-   status = local.enable_versioning ? "Enabled" : "Disabled"
-   mfa_delete = local.enable_mfa_delete ? "Enabled" : "Disabled"
+   status = local.enable_versioning
+   mfa_delete = local.enable_mfa_delete
  }
 }
 
