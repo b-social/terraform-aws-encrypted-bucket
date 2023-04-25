@@ -53,16 +53,6 @@ resource "aws_s3_bucket" "encrypted_bucket" {
 
   force_destroy = local.allow_destroy_when_objects_present
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = local.kms_master_key_id
-        sse_algorithm     = local.sse_algorithm
-      }
-      bucket_key_enabled = local.enable_bucket_key
-    }
-  }
-
   dynamic logging {
     for_each = local.enable_access_logging ? toset(["logging"]) : toset([])
     content {
@@ -79,6 +69,18 @@ resource "aws_s3_bucket" "encrypted_bucket" {
   tags = merge({
     Name = var.bucket_name
   }, var.tags)
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "encrypted_bucket_server_side_encryption_configuration" {
+  bucket = aws_s3_bucket.encrypted_bucket
+
+  rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = local.kms_master_key_id
+        sse_algorithm     = local.sse_algorithm
+      }
+      bucket_key_enabled = local.enable_bucket_key
+    }
 }
 
 resource "aws_s3_bucket_ownership_controls" "encrypted_bucket_ownership_controls" {
