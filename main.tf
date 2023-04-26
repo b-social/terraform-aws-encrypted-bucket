@@ -2,7 +2,7 @@ locals {
   sse_s3_algorithm  = "AES256"
   sse_kms_algorithm = "aws:kms"
 
-  sse_algorithm     = var.kms_key_arn == "" ? local.sse_s3_algorithm : local.sse_kms_algorithm
+  sse_algorithm     = var.kms_key_arn == null ? local.sse_s3_algorithm : local.sse_kms_algorithm
   kms_master_key_id = var.kms_key_arn == "" ? null : var.kms_key_arn
 
   enable_versioning                  = var.enable_versioning == "yes" ? "Enabled" : "Disabled"
