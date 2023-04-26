@@ -79,14 +79,6 @@ resource "aws_s3_bucket_ownership_controls" "encrypted_bucket_ownership_controls
 }
 
 resource "aws_s3_bucket_public_access_block" "public_access_block" {
-  count = (
-  var.public_access_block.block_public_acls
-  || var.public_access_block.block_public_policy
-  || var.public_access_block.ignore_public_acls
-  || var.public_access_block.restrict_public_buckets
-  ? 1 : 0
-  )
-
   bucket = aws_s3_bucket.encrypted_bucket.id
 
   block_public_acls       = var.public_access_block.block_public_acls
