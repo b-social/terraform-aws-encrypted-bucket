@@ -48,7 +48,6 @@ data "template_file" "access_bucket_policy" {
 
 resource "aws_s3_bucket" "access_log_bucket" {
   bucket = local.access_bucket_name
-  acl    = "log-delivery-write"
   count = var.enable_access_logging == "yes" ? 1 : 0
 
   versioning {
@@ -75,8 +74,6 @@ resource "aws_s3_bucket" "access_log_bucket" {
 
 resource "aws_s3_bucket" "encrypted_bucket" {
   bucket = var.bucket_name
-
-  acl = var.acl
 
   force_destroy = var.allow_destroy_when_objects_present == "yes"
 

@@ -127,23 +127,6 @@ describe 'Encrypted bucket' do
     end
   end
 
-  context 'with public-read acl' do
-    before(:all) do
-      provision(acl: 'public-read')
-    end
-
-    it 'is public-read' do
-      expect(subject.acl_grants_count).to(eq(2))
-
-      acl_grant = subject.acl.grants[0]
-      expect(acl_grant.grantee.type).to(eq('CanonicalUser'))
-      expect(acl_grant.permission).to(eq('FULL_CONTROL'))
-      acl_grant = subject.acl.grants[1]
-      expect(acl_grant.grantee.type).to(eq('Group'))
-      expect(acl_grant.permission).to(eq('READ'))
-    end
-  end
-
   context 'when mfa_delete specified' do
     let(:plan_output) {
       capture_stdout do
