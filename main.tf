@@ -1,12 +1,3 @@
-data "template_file" "deny_unencrypted_object_uploads_fragment" {
-  template = file("${path.module}/policy-fragments/deny-unencrypted-object-uploads.json.tpl")
-
-  vars = {
-    bucket_name = var.bucket_name
-    sse_algorithm = var.kms_key_arn != null ? "aws:kms" : "AES256"
-  }
-}
-
 data "template_file" "deny_unencrypted_inflight_operations_fragment" {
   template = file("${path.module}/policy-fragments/deny-unencrypted-inflight-operations.json.tpl")
 
@@ -20,7 +11,6 @@ data "template_file" "encrypted_bucket_policy" {
 
   vars = {
     bucket_name = var.bucket_name
-    deny_unencrypted_object_upload_fragment = data.template_file.deny_unencrypted_object_uploads_fragment.rendered
     deny_unencrypted_inflight_operations_fragment = data.template_file.deny_unencrypted_inflight_operations_fragment.rendered
   }
 }
