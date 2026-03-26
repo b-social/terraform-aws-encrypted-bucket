@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'awspec'
 gem 'confidante'
 gem 'git'
-gem 'nokogiri'
+gem 'nokogiri', '>= 1.19.1'
 gem 'rake'
 gem 'rake_circle_ci'
 gem 'rake_github'
@@ -12,3 +12,9 @@ gem 'rake_ssh'
 gem 'rake_terraform'
 gem 'rspec'
 gem 'semantic'
+
+gem 'rspec-its', '>= 2.0.0'
+
+gem 'activesupport', '>= 7.2.3.1'
+
+gem 'faraday', '>= 2.12.3'
